@@ -1,0 +1,109 @@
+name: Test Feishu Equipment Sync
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-feishu:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get Feishu access token
+        id: auth
+        shell: bash
+        env:
+          FEISHU_APP_ID: ${{ secrets.FEISHU_APP_ID }}
+          FEISHU_APP_SECRET: ${{ secrets.FEISHU_APP_SECRET }}
+        run: |
+          set -euo pipefail
+
+          RESPONSE=$(curl -sS -X POST \
+            'https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal' \
+            -H 'Content-Type: application/json; charset=utf-8' \
+            -d "$(jq -n \
+              --arg app_id "$FEISHU_APP_ID" \
+              --arg app_secret "$FEISHU_APP_SECRET" \
+              '{app_id:$app_id, app_secret:$app_secret}')")
+
+          CODE=$(echo "$RESPONSE" | jq -r '.code')
+
+          if [ "$CODE" != "0" ]; then
+            echo "Failed to get tenant_access_token:"
+            echo "$RESPONSE"
+            exit 1
+          fi
+
+          TOKEN=$(echo "$RESPONSE" | jq -r '.tenant_access_token')
+
+          echo "::add-mask::$TOKEN"
+          echo "token=$TOKEN" >> "$GITHUB_OUTPUT"
+
+          echo "✅ Feishu authentication successful."
+
+
+      - name: Resolve Wiki Equipment List
+        id: wiki
+        shell: bash
+        env:
+          ACCESS_TOKEN: ${{ steps.auth.outputs.token }}
+          WIKI_NODE_TOKEN: ${{ vars.WIKI_NODE_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          RESPONSE=$(curl -sS --get \
+            'https://open.feishu.cn/open-apis/wiki/v2/spaces/get_node' \
+            -H "Authorization: Bearer $ACCESS_TOKEN" \
+            --data-urlencode "token=$WIKI_NODE_TOKEN")
+
+          CODE=$(echo "$RESPONSE" | jq -r '.code')
+
+          if [ "$CODE" != "0" ]; then
+            echo "Failed to resolve Wiki node:"
+            echo "$RESPONSE"
+            exit 1
+          fi
+
+          APP_TOKEN=$(echo "$RESPONSE" | jq -r '.data.node.obj_token')
+          OBJ_TYPE=$(echo "$RESPONSE" | jq -r '.data.node.obj_type')
+
+          echo "Resolved object type: $OBJ_TYPE"
+
+          if [ "$OBJ_TYPE" != "bitable" ]; then
+            echo "Expected a bitable document, but received: $OBJ_TYPE"
+            exit 1
+          fi
+
+          echo "app_token=$APP_TOKEN" >> "$GITHUB_OUTPUT"
+
+          echo "✅ Equipment Bitable located."
+
+
+      - name: Read Microphone List
+        shell: bash
+        env:
+          ACCESS_TOKEN: ${{ steps.auth.outputs.token }}
+          APP_TOKEN: ${{ steps.wiki.outputs.app_token }}
+          TABLE_ID: ${{ vars.FEISHU_TABLE_ID }}
+        run: |
+          set -euo pipefail
+
+          RESPONSE=$(curl -sS \
+            "https://open.feishu.cn/open-apis/bitable/v1/apps/$APP_TOKEN/tables/$TABLE_ID/records?page_size=20" \
+            -H "Authorization: Bearer $ACCESS_TOKEN")
+
+          CODE=$(echo "$RESPONSE" | jq -r '.code')
+
+          if [ "$CODE" != "0" ]; then
+            echo "Failed to read Microphone List:"
+            echo "$RESPONSE"
+            exit 1
+          fi
+
+          echo "✅ Connected to Microphone List."
+          echo ""
+          echo "First microphone records:"
+          echo "-------------------------"
+
+          echo "$RESPONSE" \
+            | jq -r '.data.items[]?.fields["Microphone Model"] // empty' \
+            | head -10
