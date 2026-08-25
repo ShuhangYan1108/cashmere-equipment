@@ -1,0 +1,1109 @@
+[
+  {
+    "model": "3Dio Free Space XLR",
+    "manufacturer": "3Dio",
+    "type": "cnd.",
+    "polarPattern": [
+      "○"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "AEA N22",
+    "manufacturer": "AEA",
+    "type": "rib.",
+    "polarPattern": [
+      "８"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "AEA R44C",
+    "manufacturer": "AEA",
+    "type": "rib.",
+    "polarPattern": [
+      "８"
+    ],
+    "total": 2,
+    "available": 2
+  },
+  {
+    "model": "AEA R88",
+    "manufacturer": "AEA",
+    "type": "rib.",
+    "polarPattern": [
+      "８"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "AKG C414",
+    "manufacturer": "AKG",
+    "type": "cnd.",
+    "polarPattern": [
+      "○",
+      "８",
+      "♡"
+    ],
+    "total": 1,
+    "available": 0
+  },
+  {
+    "model": "AKG C414XLII",
+    "manufacturer": "AKG",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡",
+      "８",
+      "○"
+    ],
+    "total": 2,
+    "available": 2
+  },
+  {
+    "model": "AKG C451 (pair)",
+    "manufacturer": "AKG",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 2,
+    "available": 2
+  },
+  {
+    "model": "AKG D112 MKII",
+    "manufacturer": "AKG",
+    "type": "mvc.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "AKG DV12 VR",
+    "manufacturer": "AKG",
+    "type": "mvc.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Alctron DSG-1",
+    "manufacturer": "Actron",
+    "type": "cnd.",
+    "polarPattern": [
+      "S♡"
+    ],
+    "total": 2,
+    "available": 2
+  },
+  {
+    "model": "Alctron MT68",
+    "manufacturer": "Actron",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Alctron T05",
+    "manufacturer": "Actron",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡",
+      "○",
+      "H♡"
+    ],
+    "total": 2,
+    "available": 2
+  },
+  {
+    "model": "Aston Origin",
+    "manufacturer": "Aston",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Aston STARLIGHT #1",
+    "manufacturer": "Aston",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Aston STARLIGHT #2",
+    "manufacturer": "Aston",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Audix D6",
+    "manufacturer": "Audix",
+    "type": "mvc.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 2,
+    "available": 2
+  },
+  {
+    "model": "Audix OM6",
+    "manufacturer": "Audix",
+    "type": "mvc.",
+    "polarPattern": [
+      "H♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Avantone CK-40",
+    "manufacturer": "Avantone",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡",
+      "○",
+      "８"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Avantone CV-12",
+    "manufacturer": "Avantone",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡",
+      "○",
+      "８"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Behringer ECM 8000",
+    "manufacturer": "Behringer",
+    "type": "cnd.",
+    "polarPattern": [
+      "○"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Boman PRO-48BK",
+    "manufacturer": "Boman",
+    "type": "rib.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Coles 4038*2 (Pair C mic 1)",
+    "manufacturer": "Coles",
+    "type": "rib.",
+    "polarPattern": [
+      "８"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Coles 4038*2 (Pair C mic 2)",
+    "manufacturer": "Coles",
+    "type": "rib.",
+    "polarPattern": [
+      "８"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Coles 4038*2 (Pair H mic 1)",
+    "manufacturer": "Coles",
+    "type": "rib.",
+    "polarPattern": [
+      "８"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Coles 4038*2 (Pair H mic 2)",
+    "manufacturer": "Coles",
+    "type": "rib.",
+    "polarPattern": [
+      "８"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Como Wireless Intercom Headsets",
+    "manufacturer": "Accsoon",
+    "type": "misc.",
+    "polarPattern": [
+      "/"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "DPA 2006A",
+    "manufacturer": "DPA",
+    "type": "cnd.",
+    "polarPattern": [
+      "○"
+    ],
+    "total": 2,
+    "available": 2
+  },
+  {
+    "model": "DPA 4006A",
+    "manufacturer": "DPA",
+    "type": "cnd.",
+    "polarPattern": [
+      "○"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "DPA 4006A (pair)",
+    "manufacturer": "DPA",
+    "type": "cnd.",
+    "polarPattern": [
+      "○"
+    ],
+    "total": 2,
+    "available": 2
+  },
+  {
+    "model": "DPA 4011A (pair)",
+    "manufacturer": "DPA",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 2,
+    "available": 2
+  },
+  {
+    "model": "DPA 4099 (pack)",
+    "manufacturer": "DPA",
+    "type": "cnd.",
+    "polarPattern": [
+      "S♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Direct Sound DS-R5",
+    "manufacturer": "Direct Sound",
+    "type": "rib.",
+    "polarPattern": [
+      "８"
+    ],
+    "total": 7,
+    "available": 7
+  },
+  {
+    "model": "EV RE20",
+    "manufacturer": "Electro-Voice",
+    "type": "mvc.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Earthworks SR30",
+    "manufacturer": "Earthworks Audio",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Gretsch Catalina",
+    "manufacturer": "Gretsch",
+    "type": "mvc.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Lauten Audio Kick Mic",
+    "manufacturer": "Lauten Audio",
+    "type": "mvc.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Lauten Audio Snare Mic",
+    "manufacturer": "Lauten Audio",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Lauten LA-320",
+    "manufacturer": "Lauten Audio",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Lewitt LCT550",
+    "manufacturer": "Lewitt",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 2,
+    "available": 2
+  },
+  {
+    "model": "Lewitt LCT 440 Pure（寄放）",
+    "manufacturer": "Lewitt",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Lewitt DTP 640 REX（寄放）",
+    "manufacturer": "Lewitt",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "MG MD100",
+    "manufacturer": "MG",
+    "type": "mvc.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Manley Black Reference",
+    "manufacturer": "Manley",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Neumann KM184 Pair 1 micA",
+    "manufacturer": "Neumann",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Neumann KM184 Pair 1 micB",
+    "manufacturer": "Neumann",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Neumann KM184 Pair 2 micA",
+    "manufacturer": "Neumann",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 2,
+    "available": 2
+  },
+  {
+    "model": "Neumann M149 Tube",
+    "manufacturer": "Neumann",
+    "type": "cnd.",
+    "polarPattern": [
+      "○",
+      "♡",
+      "８"
+    ],
+    "total": 2,
+    "available": 2
+  },
+  {
+    "model": "Neumann U47 FET",
+    "manufacturer": "Neumann",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 2,
+    "available": 2
+  },
+  {
+    "model": "Neumann U67",
+    "manufacturer": "Neumann",
+    "type": "cnd.",
+    "polarPattern": [
+      "○",
+      "♡",
+      "８"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Neumann U87 Ai",
+    "manufacturer": "Neumann",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡",
+      "○",
+      "８"
+    ],
+    "total": 3,
+    "available": 3
+  },
+  {
+    "model": "Panther C800G",
+    "manufacturer": "Panther",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡",
+      "○"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Panther C800G Power",
+    "manufacturer": "Panther",
+    "type": "misc.",
+    "polarPattern": [
+      "/"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Panther ELA M 251",
+    "manufacturer": "Panther",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡",
+      "○"
+    ],
+    "total": 2,
+    "available": 2
+  },
+  {
+    "model": "Panther U47 M7",
+    "manufacturer": "Panther",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡",
+      "○"
+    ],
+    "total": 3,
+    "available": 3
+  },
+  {
+    "model": "Røde K2",
+    "manufacturer": "Røde",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Røde M5",
+    "manufacturer": "Røde",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Røde NT-SF1",
+    "manufacturer": "Røde",
+    "type": "cnd.",
+    "polarPattern": [
+      "○"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Schoeps CMC 6xt U + MK5  (pair)",
+    "manufacturer": "Scheops",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡",
+      "○"
+    ],
+    "total": 2,
+    "available": 2
+  },
+  {
+    "model": "Sennheiser MD 421",
+    "manufacturer": "Sennheiser",
+    "type": "mvc.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 5,
+    "available": 5
+  },
+  {
+    "model": "Sennheiser MD 441-U",
+    "manufacturer": "Sennheiser",
+    "type": "mvc.",
+    "polarPattern": [
+      "S♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Sennheiser MKH416",
+    "manufacturer": "Sennheiser",
+    "type": "cnd.",
+    "polarPattern": [
+      "S♡",
+      "Labor"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Sennheiser MKH800",
+    "manufacturer": "Sennheiser",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡",
+      "○",
+      "８"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Sennheiser e901",
+    "manufacturer": "Sennheiser",
+    "type": "mvc.",
+    "polarPattern": [
+      "Half♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Sennheiser e906",
+    "manufacturer": "Sennheiser",
+    "type": "mvc.",
+    "polarPattern": [
+      "S♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Shure 55SH Series II",
+    "manufacturer": "Shure",
+    "type": "mvc.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Shure Beta 98A with gooseneck clip",
+    "manufacturer": "Shure",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 4,
+    "available": 4
+  },
+  {
+    "model": "Shure Beta 98A without gooseneck clip",
+    "manufacturer": "Shure",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Shure FP5 G5 Wireless Pair",
+    "manufacturer": "Shure",
+    "type": "misc.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Shure SM57",
+    "manufacturer": "Shure",
+    "type": "mvc.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 6,
+    "available": 6
+  },
+  {
+    "model": "Shure SM58",
+    "manufacturer": "Shure",
+    "type": "mvc.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 5,
+    "available": 3
+  },
+  {
+    "model": "Shure SM7B",
+    "manufacturer": "Shure",
+    "type": "mvc.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 2,
+    "available": 2
+  },
+  {
+    "model": "Shure Super 55",
+    "manufacturer": "Shure",
+    "type": "mvc.",
+    "polarPattern": [
+      "S♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Sony C800G",
+    "manufacturer": "Sony",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Soyuz 013 Tube (pair)",
+    "manufacturer": "Soyuz",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 2,
+    "available": 2
+  },
+  {
+    "model": "Soyuz 017 Tube",
+    "manufacturer": "Soyuz",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 2,
+    "available": 2
+  },
+  {
+    "model": "Takstar E-340",
+    "manufacturer": "Takstar",
+    "type": "mvc.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Telefunken ELA M251E",
+    "manufacturer": "Telefunken",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Telefunken M80",
+    "manufacturer": "Telefunken",
+    "type": "mvc.",
+    "polarPattern": [
+      "S♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Telefunken M81",
+    "manufacturer": "Telefunken",
+    "type": "mvc.",
+    "polarPattern": [
+      "S♡"
+    ],
+    "total": 3,
+    "available": 3
+  },
+  {
+    "model": "Telefunken M82",
+    "manufacturer": "Telefunken",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Telefunken U47",
+    "manufacturer": "Telefunken",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 2,
+    "available": 2
+  },
+  {
+    "model": "Topping CL101",
+    "manufacturer": "Topping",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Trinnov Reference Mic",
+    "manufacturer": "Trinnov",
+    "type": "cnd.",
+    "polarPattern": [
+      "○"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Vanguard V1 Lolli  (pair)",
+    "manufacturer": "Telefunken",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡",
+      "○",
+      "８"
+    ],
+    "total": 2,
+    "available": 2
+  },
+  {
+    "model": "Yamaha Sub Kick",
+    "manufacturer": "YAMAHA",
+    "type": "mvc.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "ZEPPELIN DESIGN LABS Cortado MKII",
+    "manufacturer": "ZEPPELIN DESIGN LABS",
+    "type": "cnd.",
+    "polarPattern": [
+      "Contact"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Zoom H1n",
+    "manufacturer": "Zoom",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "sE BL8",
+    "manufacturer": "sE",
+    "type": "mvc.",
+    "polarPattern": [
+      "Half♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "sE V3",
+    "manufacturer": "sE",
+    "type": "mvc.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "sE V7",
+    "manufacturer": "sE",
+    "type": "mvc.",
+    "polarPattern": [
+      "S♡"
+    ],
+    "total": 5,
+    "available": 5
+  },
+  {
+    "model": "sE V7 PTT",
+    "manufacturer": "sE",
+    "type": "mvc.",
+    "polarPattern": [
+      "S♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "sE RN17（寄放）",
+    "manufacturer": "sE",
+    "type": "cnd.",
+    "polarPattern": [
+      "○"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "sE RNR1（寄放）",
+    "manufacturer": "sE",
+    "type": "rib.",
+    "polarPattern": [
+      "８"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "sE6160 A(寄放)",
+    "manufacturer": "sE",
+    "type": "cnd.",
+    "polarPattern": [
+      "S♡"
+    ],
+    "total": 1,
+    "available": 0
+  },
+  {
+    "model": "sE6160 B(寄放)",
+    "manufacturer": "sE",
+    "type": "cnd.",
+    "polarPattern": [
+      "S♡"
+    ],
+    "total": 1,
+    "available": 0
+  },
+  {
+    "model": "sE7 Matched Pair 1 micA",
+    "manufacturer": "sE",
+    "type": "mvc.",
+    "polarPattern": [
+      "♡",
+      "○",
+      "８"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "sE7 Matched Pair 1 micB",
+    "manufacturer": "sE",
+    "type": "mvc.",
+    "polarPattern": [
+      "♡",
+      "○",
+      "８"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "sE7 Matched Pair 2 micA",
+    "manufacturer": "sE",
+    "type": "mvc.",
+    "polarPattern": [
+      "♡",
+      "○",
+      "８"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "sE7 Matched Pair 2 micB",
+    "manufacturer": "sE",
+    "type": "mvc.",
+    "polarPattern": [
+      "♡",
+      "○",
+      "８"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "sE7 Matched Pair 3 micA",
+    "manufacturer": "sE",
+    "type": "mvc.",
+    "polarPattern": [
+      "♡",
+      "○",
+      "８"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "sE7 Matched Pair 3 micB",
+    "manufacturer": "sE",
+    "type": "mvc.",
+    "polarPattern": [
+      "♡",
+      "○",
+      "８"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "电话麦克风",
+    "manufacturer": "unknown",
+    "type": "misc.",
+    "polarPattern": [
+      "/"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "迷你系列头戴麦克风*2",
+    "manufacturer": "KIMAFUN",
+    "type": "elt.",
+    "polarPattern": [
+      "/"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "自制电话麦克风",
+    "manufacturer": "unknown",
+    "type": "misc.",
+    "polarPattern": [
+      "/"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "自制听诊器麦克风",
+    "manufacturer": "unknown",
+    "type": "misc.",
+    "polarPattern": [
+      "/"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Lewitt RAY(寄放)",
+    "manufacturer": "Lewitt",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 1,
+    "available": 1
+  },
+  {
+    "model": "Lewitt DTP 640 REX(寄放)",
+    "manufacturer": "Lewitt",
+    "type": "cnd.",
+    "polarPattern": [
+      "♡"
+    ],
+    "total": 1,
+    "available": 1
+  }
+]
