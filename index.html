@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>CASMRE Studios — Equipment</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f7f7f5;
+      color: #111;
+    }
+
+    header {
+      padding: 48px 6vw 32px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .brand {
+      font-size: 14px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(40px, 6vw, 80px);
+      font-weight: 500;
+      letter-spacing: -0.04em;
+    }
+
+    .intro {
+      max-width: 650px;
+      margin-top: 20px;
+      font-size: 17px;
+      line-height: 1.6;
+      color: #555;
+    }
+
+    .controls {
+      padding: 28px 6vw;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid #ddd;
+    }
+
+    input {
+      flex: 1;
+      min-width: 240px;
+      padding: 14px 16px;
+      border: 1px solid #ccc;
+      border-radius: 999px;
+      background: white;
+      font-size: 15px;
+    }
+
+    button {
+      padding: 12px 18px;
+      border: 1px solid #ccc;
+      border-radius: 999px;
+      background: white;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    button.active {
+      background: #111;
+      color: white;
+      border-color: #111;
+    }
+
+    main {
+      padding: 0 6vw 80px;
+    }
+
+    .equipment-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 140px 140px;
+      gap: 20px;
+      align-items: center;
+
+      padding: 24px 0;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .model {
+      font-size: 21px;
+      font-weight: 500;
+    }
+
+    .manufacturer,
+    .type {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .availability {
+      text-align: right;
+      font-size: 14px;
+    }
+
+    .available {
+      color: #167a36;
+    }
+
+    .unavailable {
+      color: #888;
+    }
+
+    .empty {
+      padding: 80px 0;
+      color: #777;
+    }
+
+    footer {
+      padding: 30px 6vw;
+      border-top: 1px solid #ddd;
+      font-size: 13px;
+      color: #777;
+    }
+
+    @media (max-width: 700px) {
+      .equipment-row {
+        grid-template-columns: 1fr auto;
+      }
+
+      .manufacturer,
+      .type {
+        grid-column: 1;
+      }
+
+      .availability {
+        grid-column: 2;
+        grid-row: 1;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="brand">CASMRE Studios</div>
+
+  <h1>Equipment</h1>
+
+  <div class="intro">
+    A selection of microphones and equipment available at CASMRE Studios.
+    Availability is synced with our studio inventory.
+  </div>
+</header>
+
+
+<section class="controls">
+
+  <input
+    id="search"
+    type="text"
+    placeholder="Search equipment, manufacturer or model..."
+  />
+
+  <button id="allButton" class="active">
+    All
+  </button>
+
+  <button id="availableButton">
+    Available
+  </button>
+
+</section>
+
+
+<main id="equipmentList">
+  Loading equipment...
+</main>
+
+
+<footer>
+  CASMRE Studios · Shanghai
+</footer>
+
+
+<script>
+
+let equipment = [];
+let filter = "all";
+
+
+async function loadEquipment() {
+
+  try {
+
+    const response = await fetch("./data/equipment.json");
+
+    equipment = await response.json();
+
+    equipment.sort((a, b) =>
+      a.model.localeCompare(b.model)
+    );
+
+    renderEquipment();
+
+  } catch (error) {
+
+    document.getElementById("equipmentList").innerHTML =
+      '<div class="empty">Unable to load equipment.</div>';
+
+    console.error(error);
+
+  }
+
+}
+
+
+function renderEquipment() {
+
+  const search =
+    document
+      .getElementById("search")
+      .value
+      .toLowerCase();
+
+
+  const filtered = equipment.filter(item => {
+
+    const searchableText =
+      `${item.model}
+       ${item.manufacturer}
+       ${item.type}`
+      .toLowerCase();
+
+
+    const matchesSearch =
+      searchableText.includes(search);
+
+
+    const matchesAvailability =
+      filter === "all" ||
+      (filter === "available" && item.available > 0);
+
+
+    return matchesSearch && matchesAvailability;
+
+  });
+
+
+  const container =
+    document.getElementById("equipmentList");
+
+
+  if (!filtered.length) {
+
+    container.innerHTML =
+      '<div class="empty">No equipment found.</div>';
+
+    return;
+
+  }
+
+
+  container.innerHTML = filtered
+    .map(item => {
+
+      const availability =
+        item.available > 0
+
+        ? `<span class="available">
+             ${item.available} Available
+           </span>`
+
+        : `<span class="unavailable">
+             Currently Unavailable
+           </span>`;
+
+
+      return `
+
+        <div class="equipment-row">
+
+          <div>
+            <div class="model">
+              ${item.model}
+            </div>
+
+            <div class="manufacturer">
+              ${item.manufacturer || ""}
+            </div>
+          </div>
+
+
+          <div class="type">
+            ${item.type || ""}
+          </div>
+
+
+          <div>
+            ${item.available}/${item.total}
+          </div>
+
+
+          <div class="availability">
+            ${availability}
+          </div>
+
+        </div>
+
+      `;
+
+    })
+    .join("");
+
+}
+
+
+document
+  .getElementById("search")
+  .addEventListener(
+    "input",
+    renderEquipment
+  );
+
+
+document
+  .getElementById("allButton")
+  .addEventListener("click", () => {
+
+    filter = "all";
+
+    document
+      .getElementById("allButton")
+      .classList.add("active");
+
+    document
+      .getElementById("availableButton")
+      .classList.remove("active");
+
+    renderEquipment();
+
+  });
+
+
+document
+  .getElementById("availableButton")
+  .addEventListener("click", () => {
+
+    filter = "available";
+
+    document
+      .getElementById("availableButton")
+      .classList.add("active");
+
+    document
+      .getElementById("allButton")
+      .classList.remove("active");
+
+    renderEquipment();
+
+  });
+
+
+loadEquipment();
+
+</script>
+
+</body>
+</html>
