@@ -197,7 +197,7 @@ jobs:
               )
 
 
-                   def parent_ids(value):
+          def parent_ids(value):
               result = []
 
               def collect(item):
