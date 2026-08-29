@@ -233,6 +233,31 @@ jobs:
               # 去除重复的父记录 ID，同时保留原顺序
               return list(dict.fromkeys(result))
 
+          def instrument_is_offsite(value):
+              value = text(value).lower()
+
+              return any(marker in value for marker in [
+                  "不在棚里",
+                  "不在棚",
+                  "offsite",
+                  "off-site",
+                  "off site"
+              ])
+
+
+          def clean_instrument_name(value):
+              value = text(value).strip()
+
+              for marker in [
+                  "（不在棚里）",
+                  "(不在棚里)",
+                  "（不在棚）",
+                  "(不在棚)"
+              ]:
+                  value = value.replace(marker, "")
+
+              return value.strip().replace("''", '"')
+
           def infer_instrument_type(parent, children):
 
               content = " ".join(
@@ -370,9 +395,9 @@ jobs:
 
               item = {
                   "id": record_id,
-                  "name": text(
+                  "name": clean_instrument_name(
                       fields.get("KICK")
-                  ).strip(),
+                  ),
                   "manufacturer": text(
                       fields.get("品牌")
                   ).strip(),
@@ -385,8 +410,11 @@ jobs:
                   "color": text(
                       fields.get("颜色")
                   ).strip(),
-                  "available": is_available(
-                      fields.get("Status")
+                  "available": (
+                      is_available(fields.get("Status"))
+                      and not instrument_is_offsite(
+                          fields.get("KICK")
+                      )
                   ),
                   "parents": parent_ids(
                       fields.get("父记录")
