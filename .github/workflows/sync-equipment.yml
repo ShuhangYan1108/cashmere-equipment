@@ -197,37 +197,41 @@ jobs:
               )
 
 
-          def parent_ids(value):
+                   def parent_ids(value):
+              result = []
 
-              if not value:
-                  return []
+              def collect(item):
+                  if not item:
+                      return
 
-              if isinstance(value, str):
-                  return [value]
-
-              if isinstance(value, list):
-
-                  result = []
-
-                  for item in value:
-
-                      if isinstance(item, str):
+                  if isinstance(item, str):
+                      # 飞书记录 ID 通常以 rec 开头
+                      if item.startswith("rec"):
                           result.append(item)
+                      return
 
-                      elif isinstance(item, dict):
+                  if isinstance(item, list):
+                      for child in item:
+                          collect(child)
+                      return
 
-                          rid = (
-                              item.get("record_id")
-                              or item.get("id")
-                          )
+                  if isinstance(item, dict):
+                      # 兼容不同版本的飞书关联记录格式
+                      for key in [
+                          "record_id",
+                          "id",
+                          "record_ids",
+                          "link_record_ids",
+                          "value",
+                          "values"
+                      ]:
+                          if key in item:
+                              collect(item[key])
 
-                          if rid:
-                              result.append(rid)
+              collect(value)
 
-                  return result
-
-              return []
-
+              # 去除重复的父记录 ID，同时保留原顺序
+              return list(dict.fromkeys(result))
 
           def infer_instrument_type(parent, children):
 
