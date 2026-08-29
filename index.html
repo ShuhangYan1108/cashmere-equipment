@@ -1,375 +1,122 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <title>CASMRE Studios — Equipment</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #f7f7f5;
-      color: #111;
-    }
-
-    header {
-      padding: 48px 6vw 32px;
-      border-bottom: 1px solid #ddd;
-    }
-
-    .brand {
-      font-size: 14px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 18px;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(40px, 6vw, 80px);
-      font-weight: 500;
-      letter-spacing: -0.04em;
-    }
-
-    .intro {
-      max-width: 650px;
-      margin-top: 20px;
-      font-size: 17px;
-      line-height: 1.6;
-      color: #555;
-    }
-
-    .controls {
-      padding: 28px 6vw;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      border-bottom: 1px solid #ddd;
-    }
-
-    input {
-      flex: 1;
-      min-width: 240px;
-      padding: 14px 16px;
-      border: 1px solid #ccc;
-      border-radius: 999px;
-      background: white;
-      font-size: 15px;
-    }
-
-    button {
-      padding: 12px 18px;
-      border: 1px solid #ccc;
-      border-radius: 999px;
-      background: white;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    button.active {
-      background: #111;
-      color: white;
-      border-color: #111;
-    }
-
-    main {
-      padding: 0 6vw 80px;
-    }
-
-    .equipment-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr 140px 140px;
-      gap: 20px;
-      align-items: center;
-
-      padding: 24px 0;
-      border-bottom: 1px solid #ddd;
-    }
-
-    .model {
-      font-size: 21px;
-      font-weight: 500;
-    }
-
-    .manufacturer,
-    .type {
-      color: #666;
-      font-size: 14px;
-    }
-
-    .availability {
-      text-align: right;
-      font-size: 14px;
-    }
-
-    .available {
-      color: #167a36;
-    }
-
-    .unavailable {
-      color: #888;
-    }
-
-    .empty {
-      padding: 80px 0;
-      color: #777;
-    }
-
-    footer {
-      padding: 30px 6vw;
-      border-top: 1px solid #ddd;
-      font-size: 13px;
-      color: #777;
-    }
-
-    @media (max-width: 700px) {
-      .equipment-row {
-        grid-template-columns: 1fr auto;
-      }
-
-      .manufacturer,
-      .type {
-        grid-column: 1;
-      }
-
-      .availability {
-        grid-column: 2;
-        grid-row: 1;
-      }
-    }
-  </style>
-</head>
-
-<body>
-
-<header>
-  <div class="brand">CASMRE Studios</div>
-
-  <h1>Equipment</h1>
-
-  <div class="intro">
-    A selection of microphones and equipment available at CASMRE Studios.
-    Availability is synced with our studio inventory.
-  </div>
-</header>
-
-
-<section class="controls">
-
-  <input
-    id="search"
-    type="text"
-    placeholder="Search equipment, manufacturer or model..."
-  />
-
-  <button id="allButton" class="active">
-    All
-  </button>
-
-  <button id="availableButton">
-    Available
-  </button>
-
-</section>
-
-
-<main id="equipmentList">
-  Loading equipment...
-</main>
-
-
-<footer>
-  CASMRE Studios · Shanghai
-</footer>
-
-
-<script>
-
-let equipment = [];
-let filter = "all";
-
-
-async function loadEquipment() {
-
-  try {
-
-    const response = await fetch("./data/equipment.json");
-
-    equipment = await response.json();
-
-    equipment.sort((a, b) =>
-      a.model.localeCompare(b.model)
-    );
-
-    renderEquipment();
-
-  } catch (error) {
-
-    document.getElementById("equipmentList").innerHTML =
-      '<div class="empty">Unable to load equipment.</div>';
-
-    console.error(error);
-
-  }
-
-}
-
-
-function renderEquipment() {
-
-  const search =
-    document
-      .getElementById("search")
-      .value
-      .toLowerCase();
-
-
-  const filtered = equipment.filter(item => {
-
-    const searchableText =
-      `${item.model}
-       ${item.manufacturer}
-       ${item.type}`
-      .toLowerCase();
-
-
-    const matchesSearch =
-      searchableText.includes(search);
-
-
-    const matchesAvailability =
-      filter === "all" ||
-      (filter === "available" && item.available > 0);
-
-
-    return matchesSearch && matchesAvailability;
-
-  });
-
-
-  const container =
-    document.getElementById("equipmentList");
-
-
-  if (!filtered.length) {
-
-    container.innerHTML =
-      '<div class="empty">No equipment found.</div>';
-
-    return;
-
-  }
-
-
-  container.innerHTML = filtered
-    .map(item => {
-
-      const availability =
-        item.available > 0
-
-        ? `<span class="available">
-             ${item.available} Available
-           </span>`
-
-        : `<span class="unavailable">
-             Currently Unavailable
-           </span>`;
-
-
-      return `
-
-        <div class="equipment-row">
-
-          <div>
-            <div class="model">
-              ${item.model}
-            </div>
-
-            <div class="manufacturer">
-              ${item.manufacturer || ""}
-            </div>
-          </div>
-
-
-          <div class="type">
-            ${item.type || ""}
-          </div>
-
-
-          <div>
-            ${item.available}/${item.total}
-          </div>
-
-
-          <div class="availability">
-            ${availability}
-          </div>
-
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="CASMRE Studios Equipment Library — a live bilingual catalogue of studio audio equipment and instruments."
+    >
+    <title>Equipment Library | CASMRE Studios</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+  </head>
+
+  <body>
+    <header class="site-header">
+      <div class="masthead">
+        <div class="brand">CASMRE STUDIOS</div>
+        <div class="language-note">SHANGHAI · AUDIO / INSTRUMENT</div>
+      </div>
+
+      <section class="hero" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">Live equipment index / 实时设备目录</p>
+          <h1 class="hero-title" id="page-title">
+            <span>Equipment</span>
+            <span>Library</span>
+          </h1>
         </div>
 
-      `;
+        <div class="hero-copy">
+          <p>
+            A working catalogue of the microphones, audio equipment and
+            instruments available across CASMRE Studios.
+          </p>
+          <p class="chinese">
+            CASMRE Studios 录音设备与乐器资料库。库存状态与工作室设备记录自动同步。
+          </p>
 
-    })
-    .join("");
+          <div class="hero-meta" aria-label="Equipment overview">
+            <div>
+              <span class="meta-value" id="total-models">—</span>
+              <span class="meta-label">Models / 设备型号</span>
+            </div>
+            <div>
+              <span class="meta-value" id="available-units">—</span>
+              <span class="meta-label">Available / 当前可用</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </header>
 
-}
+    <main class="catalog">
+      <section class="filter-shell" aria-label="Equipment filters">
+        <div class="filter-row">
+          <nav class="primary-filters" aria-label="Primary categories">
+            <button
+              class="filter-button active"
+              type="button"
+              data-category="All"
+              aria-pressed="true"
+            >ALL / 全部</button>
+            <button
+              class="filter-button"
+              type="button"
+              data-category="Audio"
+              aria-pressed="false"
+            >AUDIO / 音频</button>
+            <button
+              class="filter-button"
+              type="button"
+              data-category="Instrument"
+              aria-pressed="false"
+            >INSTRUMENT / 乐器</button>
+          </nav>
 
+          <div class="catalog-tools">
+            <input
+              class="search-field"
+              id="equipment-search"
+              type="search"
+              aria-label="Search equipment / 搜索设备"
+              placeholder="Search / 搜索设备"
+              autocomplete="off"
+            >
 
-document
-  .getElementById("search")
-  .addEventListener(
-    "input",
-    renderEquipment
-  );
+            <label class="available-toggle" for="available-only">
+              <input id="available-only" type="checkbox">
+              <span>AVAILABLE ONLY / 仅看可用</span>
+            </label>
+          </div>
+        </div>
 
+        <div
+          class="subcategory-filters"
+          id="subcategory-filters"
+          aria-label="Equipment types"
+        ></div>
+      </section>
 
-document
-  .getElementById("allButton")
-  .addEventListener("click", () => {
+      <section class="catalog-body" aria-live="polite">
+        <div class="catalog-summary">
+          <span id="result-count">LOADING / 正在加载</span>
+          <span>LIVE DATA · AUTO SYNC / 实时数据 · 自动同步</span>
+        </div>
 
-    filter = "all";
+        <div class="equipment-list" id="equipment-list">
+          <div class="loading-state">
+            Loading equipment library…<br>
+            正在加载设备资料库……
+          </div>
+        </div>
+      </section>
+    </main>
 
-    document
-      .getElementById("allButton")
-      .classList.add("active");
-
-    document
-      .getElementById("availableButton")
-      .classList.remove("active");
-
-    renderEquipment();
-
-  });
-
-
-document
-  .getElementById("availableButton")
-  .addEventListener("click", () => {
-
-    filter = "available";
-
-    document
-      .getElementById("availableButton")
-      .classList.add("active");
-
-    document
-      .getElementById("allButton")
-      .classList.remove("active");
-
-    renderEquipment();
-
-  });
-
-
-loadEquipment();
-
-</script>
-
-</body>
+    <footer class="site-footer">
+      <span>CASMRE STUDIOS · SHANGHAI</span>
+      <span>EQUIPMENT LIBRARY / 设备资料库</span>
+    </footer>
+  </body>
 </html>
