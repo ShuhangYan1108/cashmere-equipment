@@ -20,10 +20,16 @@ jobs:
         env:
           FEISHU_APP_ID: ${{ secrets.FEISHU_APP_ID }}
           FEISHU_APP_SECRET: ${{ secrets.FEISHU_APP_SECRET }}
-          WIKI_NODE_TOKEN: ${{ vars.WIKI_NODE_TOKEN }}
-          FEISHU_TABLE_ID: ${{ vars.FEISHU_TABLE_ID }}
+
+          MIC_WIKI_TOKEN: ${{ vars.WIKI_NODE_TOKEN }}
+          MIC_TABLE_ID: ${{ vars.FEISHU_TABLE_ID }}
+
+          GENERAL_WIKI_TOKEN: ${{ vars.FEISHU_GENERAL_WIKI_TOKEN }}
+          GENERAL_TABLE_ID: ${{ vars.FEISHU_GENERAL_TABLE_ID }}
+
         run: |
           python3 <<'PY'
+
           import json
           import os
           import urllib.parse
@@ -32,8 +38,6 @@ jobs:
 
           APP_ID = os.environ["FEISHU_APP_ID"]
           APP_SECRET = os.environ["FEISHU_APP_SECRET"]
-          WIKI_TOKEN = os.environ["WIKI_NODE_TOKEN"]
-          TABLE_ID = os.environ["FEISHU_TABLE_ID"]
 
           def request_json(url, method="GET", headers=None, data=None):
               req = urllib.request.Request(
@@ -42,10 +46,17 @@ jobs:
                   headers=headers or {},
                   data=data
               )
-              with urllib.request.urlopen(req) as response:
-                  return json.loads(response.read().decode("utf-8"))
 
-          # 1. 获取 tenant_access_token
+              with urllib.request.urlopen(req) as response:
+                  return json.loads(
+                      response.read().decode("utf-8")
+                  )
+
+
+          # -----------------------------------
+          # Get tenant_access_token
+          # -----------------------------------
+
           auth_body = json.dumps({
               "app_id": APP_ID,
               "app_secret": APP_SECRET
@@ -54,7 +65,9 @@ jobs:
           auth = request_json(
               "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal",
               method="POST",
-              headers={"Content-Type": "application/json"},
+              headers={
+                  "Content-Type": "application/json"
+              },
               data=auth_body
           )
 
@@ -67,105 +80,410 @@ jobs:
               "Authorization": f"Bearer {token}"
           }
 
-          # 2. Wiki Token → Bitable App Token
-          wiki_url = (
-              "https://open.feishu.cn/open-apis/wiki/v2/spaces/get_node?"
-              + urllib.parse.urlencode({"token": WIKI_TOKEN})
-          )
 
-          wiki = request_json(wiki_url, headers=headers)
+          # -----------------------------------
+          # Helper functions
+          # -----------------------------------
 
-          if wiki.get("code") != 0:
-              raise RuntimeError(wiki)
+          def normalize(value):
 
-          app_token = wiki["data"]["node"]["obj_token"]
+              if value is None:
+                  return ""
 
-          # 3. 读取全部设备记录
-          records = []
-          page_token = None
+              if isinstance(value, bool):
+                  return value
 
-          while True:
-              params = {"page_size": 500}
+              if isinstance(value, list):
 
-              if page_token:
-                  params["page_token"] = page_token
+                  result = []
+
+                  for x in value:
+
+                      if isinstance(x, dict):
+                          result.append(
+                              x.get(
+                                  "text",
+                                  x.get(
+                                      "name",
+                                      str(x)
+                                  )
+                              )
+                          )
+
+                      else:
+                          result.append(str(x))
+
+                  return ", ".join(result)
+
+              if isinstance(value, dict):
+
+                  return value.get(
+                      "text",
+                      value.get(
+                          "name",
+                          str(value)
+                      )
+                  )
+
+              return str(value)
+
+
+          def first_field(fields, candidates, default=""):
+
+              for name in candidates:
+
+                  if name in fields:
+
+                      value = normalize(
+                          fields.get(name)
+                      )
+
+                      if value != "":
+                          return value
+
+              return default
+
+
+          def resolve_app_token(wiki_token):
 
               url = (
-                  f"https://open.feishu.cn/open-apis/bitable/v1/apps/"
-                  f"{app_token}/tables/{TABLE_ID}/records?"
-                  + urllib.parse.urlencode(params)
+                  "https://open.feishu.cn/open-apis/"
+                  "wiki/v2/spaces/get_node?"
+                  + urllib.parse.urlencode({
+                      "token": wiki_token
+                  })
               )
 
-              response = request_json(url, headers=headers)
+              response = request_json(
+                  url,
+                  headers=headers
+              )
 
               if response.get("code") != 0:
                   raise RuntimeError(response)
 
-              data = response["data"]
-              records.extend(data.get("items", []))
+              return response[
+                  "data"
+              ]["node"]["obj_token"]
 
-              if not data.get("has_more"):
-                  break
 
-              page_token = data.get("page_token")
+          def read_records(wiki_token, table_id):
 
-          # 4. 按型号整理
-          equipment = OrderedDict()
+              app_token = resolve_app_token(
+                  wiki_token
+              )
 
-          for record in records:
-              fields = record.get("fields", {})
+              records = []
+              page_token = None
 
-              model = fields.get("Microphone Model")
-              if not model:
-                  continue
+              while True:
 
-              manufacturer = fields.get("Manufacturer", "")
-              status = fields.get("Status", "")
-              mic_type = fields.get("Type", "")
-              polar_pattern = fields.get("Polar Pattern", "")
-
-              # 飞书单选字段有时返回字符串，有时返回结构
-              def normalize(value):
-                  if isinstance(value, list):
-                      return [
-                          x.get("text", x.get("name", str(x)))
-                          if isinstance(x, dict) else str(x)
-                          for x in value
-                      ]
-                  if isinstance(value, dict):
-                      return value.get("text", value.get("name", str(value)))
-                  return value
-
-              manufacturer = normalize(manufacturer)
-              status = normalize(status)
-              mic_type = normalize(mic_type)
-              polar_pattern = normalize(polar_pattern)
-
-              key = str(model).strip()
-
-              if key not in equipment:
-                  equipment[key] = {
-                      "model": key,
-                      "manufacturer": manufacturer,
-                      "type": mic_type,
-                      "polarPattern": polar_pattern,
-                      "total": 0,
-                      "available": 0
+                  params = {
+                      "page_size": 500
                   }
 
-              equipment[key]["total"] += 1
+                  if page_token:
+                      params[
+                          "page_token"
+                      ] = page_token
 
-              status_text = str(status).strip().lower()
+                  url = (
+                      "https://open.feishu.cn/"
+                      "open-apis/bitable/v1/apps/"
+                      f"{app_token}/tables/"
+                      f"{table_id}/records?"
+                      + urllib.parse.urlencode(
+                          params
+                      )
+                  )
 
-              if status_text.startswith("avail"):
-                  equipment[key]["available"] += 1
+                  response = request_json(
+                      url,
+                      headers=headers
+                  )
 
-          result = list(equipment.values())
+                  if response.get("code") != 0:
+                      raise RuntimeError(response)
 
-          # 5. 生成 JSON
-          os.makedirs("data", exist_ok=True)
+                  data = response["data"]
 
-          with open("data/equipment.json", "w", encoding="utf-8") as f:
+                  records.extend(
+                      data.get("items", [])
+                  )
+
+                  if not data.get("has_more"):
+                      break
+
+                  page_token = data.get(
+                      "page_token"
+                  )
+
+              return records
+
+
+          def is_available(status):
+
+              value = str(status).strip().lower()
+
+              unavailable_words = [
+                  "unavailable",
+                  "una.",
+                  "on loan",
+                  "maintenance",
+                  "reserved",
+                  "维修",
+                  "借出",
+                  "不可用",
+                  "停用"
+              ]
+
+              for word in unavailable_words:
+
+                  if word in value:
+                      return False
+
+              available_words = [
+                  "avail",
+                  "available",
+                  "可用",
+                  "在库"
+              ]
+
+              for word in available_words:
+
+                  if word in value:
+                      return True
+
+              return False
+
+
+          # -----------------------------------
+          # Data sources
+          # -----------------------------------
+
+          sources = [
+
+              {
+                  "name": "Microphones",
+                  "wiki": os.environ[
+                      "MIC_WIKI_TOKEN"
+                  ],
+                  "table": os.environ[
+                      "MIC_TABLE_ID"
+                  ],
+                  "default_category": "Audio",
+                  "default_subcategory": "Microphones"
+              },
+
+              {
+                  "name": "General Equipment",
+                  "wiki": os.environ[
+                      "GENERAL_WIKI_TOKEN"
+                  ],
+                  "table": os.environ[
+                      "GENERAL_TABLE_ID"
+                  ],
+                  "default_category": "Audio",
+                  "default_subcategory": "Equipment"
+              }
+
+          ]
+
+
+          equipment = OrderedDict()
+
+
+          # -----------------------------------
+          # Read and normalize
+          # -----------------------------------
+
+          for source in sources:
+
+              records = read_records(
+                  source["wiki"],
+                  source["table"]
+              )
+
+              print(
+                  f'✅ {source["name"]}: '
+                  f'{len(records)} records'
+              )
+
+              for record in records:
+
+                  fields = record.get(
+                      "fields",
+                      {}
+                  )
+
+                  model = first_field(
+                      fields,
+                      [
+                          "Microphone Model",
+                          "Equipment Model",
+                          "Equipment Name",
+                          "Model",
+                          "设备名称",
+                          "设备型号"
+                      ]
+                  )
+
+                  if not model:
+                      continue
+
+
+                  manufacturer = first_field(
+                      fields,
+                      [
+                          "Manufacturer",
+                          "Brand",
+                          "品牌",
+                          "制造商"
+                      ]
+                  )
+
+
+                  status = first_field(
+                      fields,
+                      [
+                          "Status",
+                          "Availability",
+                          "设备状态",
+                          "状态"
+                      ]
+                  )
+
+
+                  category = first_field(
+                      fields,
+                      [
+                          "Category",
+                          "Equipment Category",
+                          "一级分类",
+                          "大类"
+                      ],
+                      source[
+                          "default_category"
+                      ]
+                  )
+
+
+                  subcategory = first_field(
+                      fields,
+                      [
+                          "Subcategory",
+                          "Sub Category",
+                          "Equipment Type",
+                          "二级分类",
+                          "小类"
+                      ],
+                      source[
+                          "default_subcategory"
+                      ]
+                  )
+
+
+                  equipment_type = first_field(
+                      fields,
+                      [
+                          "Type",
+                          "Device Type",
+                          "设备类型"
+                      ]
+                  )
+
+
+                  polar_pattern = first_field(
+                      fields,
+                      [
+                          "Polar Pattern",
+                          "指向性"
+                      ]
+                  )
+
+
+                  key = (
+                      str(manufacturer).lower(),
+                      str(model).lower(),
+                      str(category).lower(),
+                      str(subcategory).lower()
+                  )
+
+
+                  if key not in equipment:
+
+                      equipment[key] = {
+
+                          "model":
+                              model,
+
+                          "manufacturer":
+                              manufacturer,
+
+                          "category":
+                              category,
+
+                          "subcategory":
+                              subcategory,
+
+                          "type":
+                              equipment_type,
+
+                          "polarPattern":
+                              polar_pattern,
+
+                          "total":
+                              0,
+
+                          "available":
+                              0
+
+                      }
+
+
+                  equipment[key]["total"] += 1
+
+
+                  if is_available(status):
+
+                      equipment[key][
+                          "available"
+                      ] += 1
+
+
+          # -----------------------------------
+          # Sort output
+          # -----------------------------------
+
+          result = list(
+              equipment.values()
+          )
+
+          result.sort(
+              key=lambda x: (
+                  x["category"],
+                  x["subcategory"],
+                  x["manufacturer"],
+                  x["model"]
+              )
+          )
+
+
+          # -----------------------------------
+          # Write JSON
+          # -----------------------------------
+
+          os.makedirs(
+              "data",
+              exist_ok=True
+          )
+
+          with open(
+              "data/equipment.json",
+              "w",
+              encoding="utf-8"
+          ) as f:
+
               json.dump(
                   result,
                   f,
@@ -173,20 +491,25 @@ jobs:
                   indent=2
               )
 
-          print(f"✅ Synced {len(records)} individual devices.")
-          print(f"✅ Generated {len(result)} equipment models.")
 
-          for item in result[:10]:
-              print(
-                  f'{item["model"]}: '
-                  f'{item["available"]}/{item["total"]} available'
-              )
+          print(
+              f"✅ Generated "
+              f"{len(result)} equipment models."
+          )
+
           PY
+
 
       - name: Commit updated equipment data
         run: |
-          git config user.name "CASMRE Equipment Sync"
-          git config user.email "actions@github.com"
+
+          git config \
+            user.name \
+            "CASMRE Equipment Sync"
+
+          git config \
+            user.email \
+            "actions@github.com"
 
           git add data/equipment.json
 
@@ -195,5 +518,7 @@ jobs:
             exit 0
           fi
 
-          git commit -m "Update equipment list"
+          git commit \
+            -m "Update equipment list"
+
           git push
