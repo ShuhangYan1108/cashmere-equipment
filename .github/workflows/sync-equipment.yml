@@ -21,20 +21,18 @@ jobs:
           FEISHU_APP_ID: ${{ secrets.FEISHU_APP_ID }}
           FEISHU_APP_SECRET: ${{ secrets.FEISHU_APP_SECRET }}
 
-          MIC_WIKI_TOKEN: ${{ vars.WIKI_NODE_TOKEN }}
-          MIC_TABLE_ID: ${{ vars.FEISHU_TABLE_ID }}
+          AUDIO_WIKI_TOKEN: ${{ vars.WIKI_NODE_TOKEN }}
+          AUDIO_TABLE_ID: ${{ vars.FEISHU_TABLE_ID }}
 
-          GENERAL_WIKI_TOKEN: ${{ vars.FEISHU_GENERAL_WIKI_TOKEN }}
-          GENERAL_TABLE_ID: ${{ vars.FEISHU_GENERAL_TABLE_ID }}
+          INSTRUMENT_WIKI_TOKEN: ${{ vars.FEISHU_GENERAL_WIKI_TOKEN }}
+          INSTRUMENT_TABLE_ID: ${{ vars.FEISHU_GENERAL_TABLE_ID }}
 
         run: |
           python3 <<'PY'
-
           import json
           import os
           import urllib.parse
           import urllib.request
-          from collections import OrderedDict
 
           APP_ID = os.environ["FEISHU_APP_ID"]
           APP_SECRET = os.environ["FEISHU_APP_SECRET"]
@@ -46,29 +44,21 @@ jobs:
                   headers=headers or {},
                   data=data
               )
-
               with urllib.request.urlopen(req) as response:
-                  return json.loads(
-                      response.read().decode("utf-8")
-                  )
+                  return json.loads(response.read().decode("utf-8"))
 
-
-          # -----------------------------------
-          # Get tenant_access_token
-          # -----------------------------------
-
-          auth_body = json.dumps({
-              "app_id": APP_ID,
-              "app_secret": APP_SECRET
-          }).encode("utf-8")
+          # --------------------------
+          # AUTH
+          # --------------------------
 
           auth = request_json(
               "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal",
               method="POST",
-              headers={
-                  "Content-Type": "application/json"
-              },
-              data=auth_body
+              headers={"Content-Type": "application/json"},
+              data=json.dumps({
+                  "app_id": APP_ID,
+                  "app_secret": APP_SECRET
+              }).encode("utf-8")
           )
 
           if auth.get("code") != 0:
@@ -80,403 +70,420 @@ jobs:
               "Authorization": f"Bearer {token}"
           }
 
-
-          # -----------------------------------
-          # Helper functions
-          # -----------------------------------
-
-          def normalize(value):
-
-              if value is None:
-                  return ""
-
-              if isinstance(value, bool):
-                  return value
-
-              if isinstance(value, list):
-
-                  result = []
-
-                  for x in value:
-
-                      if isinstance(x, dict):
-                          result.append(
-                              x.get(
-                                  "text",
-                                  x.get(
-                                      "name",
-                                      str(x)
-                                  )
-                              )
-                          )
-
-                      else:
-                          result.append(str(x))
-
-                  return ", ".join(result)
-
-              if isinstance(value, dict):
-
-                  return value.get(
-                      "text",
-                      value.get(
-                          "name",
-                          str(value)
-                      )
-                  )
-
-              return str(value)
-
-
-          def first_field(fields, candidates, default=""):
-
-              for name in candidates:
-
-                  if name in fields:
-
-                      value = normalize(
-                          fields.get(name)
-                      )
-
-                      if value != "":
-                          return value
-
-              return default
-
+          # --------------------------
+          # HELPERS
+          # --------------------------
 
           def resolve_app_token(wiki_token):
-
               url = (
-                  "https://open.feishu.cn/open-apis/"
-                  "wiki/v2/spaces/get_node?"
-                  + urllib.parse.urlencode({
-                      "token": wiki_token
-                  })
+                  "https://open.feishu.cn/open-apis/wiki/v2/spaces/get_node?"
+                  + urllib.parse.urlencode({"token": wiki_token})
               )
 
-              response = request_json(
-                  url,
-                  headers=headers
-              )
+              response = request_json(url, headers=headers)
 
               if response.get("code") != 0:
                   raise RuntimeError(response)
 
-              return response[
-                  "data"
-              ]["node"]["obj_token"]
+              return response["data"]["node"]["obj_token"]
 
 
           def read_records(wiki_token, table_id):
 
-              app_token = resolve_app_token(
-                  wiki_token
-              )
+              app_token = resolve_app_token(wiki_token)
 
               records = []
               page_token = None
 
               while True:
 
-                  params = {
-                      "page_size": 500
-                  }
+                  params = {"page_size": 500}
 
                   if page_token:
-                      params[
-                          "page_token"
-                      ] = page_token
+                      params["page_token"] = page_token
 
                   url = (
-                      "https://open.feishu.cn/"
-                      "open-apis/bitable/v1/apps/"
-                      f"{app_token}/tables/"
-                      f"{table_id}/records?"
-                      + urllib.parse.urlencode(
-                          params
-                      )
+                      f"https://open.feishu.cn/open-apis/bitable/v1/apps/"
+                      f"{app_token}/tables/{table_id}/records?"
+                      + urllib.parse.urlencode(params)
                   )
 
-                  response = request_json(
-                      url,
-                      headers=headers
-                  )
+                  response = request_json(url, headers=headers)
 
                   if response.get("code") != 0:
                       raise RuntimeError(response)
 
                   data = response["data"]
 
-                  records.extend(
-                      data.get("items", [])
-                  )
+                  records.extend(data.get("items", []))
 
                   if not data.get("has_more"):
                       break
 
-                  page_token = data.get(
-                      "page_token"
-                  )
+                  page_token = data.get("page_token")
 
               return records
 
 
-          def is_available(status):
+          def text(value):
 
-              value = str(status).strip().lower()
+              if value is None:
+                  return ""
 
-              unavailable_words = [
-                  "unavailable",
+              if isinstance(value, list):
+
+                  values = []
+
+                  for item in value:
+
+                      if isinstance(item, dict):
+                          values.append(
+                              str(
+                                  item.get(
+                                      "text",
+                                      item.get(
+                                          "name",
+                                          item.get(
+                                              "record_id",
+                                              ""
+                                          )
+                                      )
+                                  )
+                              )
+                          )
+                      else:
+                          values.append(str(item))
+
+                  return ", ".join(values)
+
+              if isinstance(value, dict):
+                  return str(
+                      value.get(
+                          "text",
+                          value.get(
+                              "name",
+                              ""
+                          )
+                      )
+                  )
+
+              return str(value)
+
+
+          def is_available(value):
+
+              value = text(value).lower().strip()
+
+              unavailable = [
                   "una.",
+                  "unavailable",
                   "on loan",
                   "maintenance",
-                  "reserved",
                   "维修",
                   "借出",
-                  "不可用",
-                  "停用"
+                  "不可用"
               ]
 
-              for word in unavailable_words:
+              if any(
+                  word in value
+                  for word in unavailable
+              ):
+                  return False
 
-                  if word in value:
-                      return False
-
-              available_words = [
-                  "avail",
-                  "available",
-                  "可用",
-                  "在库"
-              ]
-
-              for word in available_words:
-
-                  if word in value:
-                      return True
-
-              return False
+              return (
+                  "avail" in value
+                  or "available" in value
+                  or "可用" in value
+              )
 
 
-          # -----------------------------------
-          # Data sources
-          # -----------------------------------
+          def parent_ids(value):
 
-          sources = [
+              if not value:
+                  return []
 
-              {
-                  "name": "Microphones",
-                  "wiki": os.environ[
-                      "MIC_WIKI_TOKEN"
-                  ],
-                  "table": os.environ[
-                      "MIC_TABLE_ID"
-                  ],
-                  "default_category": "Audio",
-                  "default_subcategory": "Microphones"
-              },
+              if isinstance(value, str):
+                  return [value]
 
-              {
-                  "name": "General Equipment",
-                  "wiki": os.environ[
-                      "GENERAL_WIKI_TOKEN"
-                  ],
-                  "table": os.environ[
-                      "GENERAL_TABLE_ID"
-                  ],
-                  "default_category": "Audio",
-                  "default_subcategory": "Equipment"
+              if isinstance(value, list):
+
+                  result = []
+
+                  for item in value:
+
+                      if isinstance(item, str):
+                          result.append(item)
+
+                      elif isinstance(item, dict):
+
+                          rid = (
+                              item.get("record_id")
+                              or item.get("id")
+                          )
+
+                          if rid:
+                              result.append(rid)
+
+                  return result
+
+              return []
+
+
+          def infer_instrument_type(parent, children):
+
+              content = " ".join(
+                  [
+                      parent.get("name", "")
+                  ]
+                  +
+                  [
+                      child.get("name", "")
+                      for child in children
+                  ]
+              ).lower()
+
+
+              if any(word in content for word in [
+                  "tom",
+                  "kick",
+                  "snare",
+                  "cymbal",
+                  "hi-hat",
+                  "hihat",
+                  "drum"
+              ]):
+                  return "Drums"
+
+
+              if any(word in content for word in [
+                  "piano",
+                  "rhodes",
+                  "keyboard",
+                  "synth",
+                  "organ"
+              ]):
+                  return "Keys"
+
+
+              if any(word in content for word in [
+                  "guitar",
+                  "bass"
+              ]):
+                  return "Guitars & Basses"
+
+
+              if any(word in content for word in [
+                  "conga",
+                  "bongo",
+                  "shaker",
+                  "tambourine",
+                  "percussion"
+              ]):
+                  return "Percussion"
+
+
+              return "Instruments"
+
+          # ==================================================
+          # AUDIO / MICROPHONES
+          # ==================================================
+
+          audio_records = read_records(
+              os.environ["AUDIO_WIKI_TOKEN"],
+              os.environ["AUDIO_TABLE_ID"]
+          )
+
+          audio_map = {}
+
+          for record in audio_records:
+
+              fields = record.get("fields", {})
+
+              model = text(
+                  fields.get("Microphone Model")
+              ).strip()
+
+              if not model:
+                  continue
+
+              brand = text(
+                  fields.get("Manufacturer")
+              ).strip()
+
+              mic_type = text(
+                  fields.get("Type")
+              ).strip()
+
+              polar = text(
+                  fields.get("Polar Pattern")
+              ).strip()
+
+              status = fields.get("Status")
+
+              key = (
+                  brand.lower(),
+                  model.lower()
+              )
+
+              if key not in audio_map:
+
+                  audio_map[key] = {
+                      "model": model,
+                      "manufacturer": brand,
+                      "category": "Audio",
+                      "subcategory": "Microphones",
+                      "type": mic_type,
+                      "polarPattern": polar,
+                      "total": 0,
+                      "available": 0
+                  }
+
+              audio_map[key]["total"] += 1
+
+              if is_available(status):
+                  audio_map[key]["available"] += 1
+
+
+          # ==================================================
+          # INSTRUMENT
+          # ==================================================
+
+          instrument_records = read_records(
+              os.environ["INSTRUMENT_WIKI_TOKEN"],
+              os.environ["INSTRUMENT_TABLE_ID"]
+          )
+
+          all_records = {}
+
+          children_by_parent = {}
+
+          # First pass
+          for record in instrument_records:
+
+              record_id = record.get("record_id")
+
+              fields = record.get("fields", {})
+
+              item = {
+                  "id": record_id,
+                  "name": text(
+                      fields.get("KICK")
+                  ).strip(),
+                  "manufacturer": text(
+                      fields.get("品牌")
+                  ).strip(),
+                  "size": text(
+                      fields.get("尺寸")
+                  ).strip(),
+                  "depth": text(
+                      fields.get("高度")
+                  ).strip(),
+                  "color": text(
+                      fields.get("颜色")
+                  ).strip(),
+                  "available": is_available(
+                      fields.get("Status")
+                  ),
+                  "parents": parent_ids(
+                      fields.get("父记录")
+                  )
               }
 
-          ]
+              all_records[record_id] = item
+
+              for parent_id in item["parents"]:
+
+                  children_by_parent.setdefault(
+                      parent_id,
+                      []
+                  ).append(item)
 
 
-          equipment = OrderedDict()
+          instruments = []
 
 
-          # -----------------------------------
-          # Read and normalize
-          # -----------------------------------
+          # Top-level records
+          for record_id, item in all_records.items():
 
-          for source in sources:
+              if item["parents"]:
+                  continue
 
-              records = read_records(
-                  source["wiki"],
-                  source["table"]
+              children = children_by_parent.get(
+                  record_id,
+                  []
               )
 
-              print(
-                  f'✅ {source["name"]}: '
-                  f'{len(records)} records'
+              # If parent itself has no status,
+              # determine availability from children
+              if children:
+
+                  available_children = [
+                      x for x in children
+                      if x["available"]
+                  ]
+
+                  parent_available = (
+                      len(available_children) > 0
+                  )
+
+              else:
+
+                  parent_available = (
+                      item["available"]
+                  )
+
+
+              subcategory = infer_instrument_type(
+                  item,
+                  children
               )
 
-              for record in records:
 
-                  fields = record.get(
-                      "fields",
-                      {}
-                  )
-
-                  model = first_field(
-                      fields,
-                      [
-                          "Microphone Model",
-                          "Equipment Model",
-                          "Equipment Name",
-                          "Model",
-                          "设备名称",
-                          "设备型号"
-                      ]
-                  )
-
-                  if not model:
-                      continue
-
-
-                  manufacturer = first_field(
-                      fields,
-                      [
-                          "Manufacturer",
-                          "Brand",
-                          "品牌",
-                          "制造商"
-                      ]
-                  )
-
-
-                  status = first_field(
-                      fields,
-                      [
-                          "Status",
-                          "Availability",
-                          "设备状态",
-                          "状态"
-                      ]
-                  )
-
-
-                  category = first_field(
-                      fields,
-                      [
-                          "Category",
-                          "Equipment Category",
-                          "一级分类",
-                          "大类"
-                      ],
-                      source[
-                          "default_category"
-                      ]
-                  )
-
-
-                  subcategory = first_field(
-                      fields,
-                      [
-                          "Subcategory",
-                          "Sub Category",
-                          "Equipment Type",
-                          "二级分类",
-                          "小类"
-                      ],
-                      source[
-                          "default_subcategory"
-                      ]
-                  )
-
-
-                  equipment_type = first_field(
-                      fields,
-                      [
-                          "Type",
-                          "Device Type",
-                          "设备类型"
-                      ]
-                  )
-
-
-                  polar_pattern = first_field(
-                      fields,
-                      [
-                          "Polar Pattern",
-                          "指向性"
-                      ]
-                  )
-
-
-                  key = (
-                      str(manufacturer).lower(),
-                      str(model).lower(),
-                      str(category).lower(),
-                      str(subcategory).lower()
-                  )
-
-
-                  if key not in equipment:
-
-                      equipment[key] = {
-
-                          "model":
-                              model,
-
-                          "manufacturer":
-                              manufacturer,
-
-                          "category":
-                              category,
-
-                          "subcategory":
-                              subcategory,
-
-                          "type":
-                              equipment_type,
-
-                          "polarPattern":
-                              polar_pattern,
-
-                          "total":
-                              0,
-
-                          "available":
-                              0
-
+              instruments.append({
+                  "model": item["name"],
+                  "manufacturer": item["manufacturer"],
+                  "category": "Instrument",
+                  "subcategory": subcategory,
+                  "color": item["color"],
+                  "available": 1 if parent_available else 0,
+                  "total": 1,
+                  "children": [
+                      {
+                          "name": child["name"],
+                          "size": child["size"],
+                          "depth": child["depth"],
+                          "available": child["available"]
                       }
+                      for child in children
+                  ]
+              })
 
 
-                  equipment[key]["total"] += 1
+          # ==================================================
+          # MERGE
+          # ==================================================
 
-
-                  if is_available(status):
-
-                      equipment[key][
-                          "available"
-                      ] += 1
-
-
-          # -----------------------------------
-          # Sort output
-          # -----------------------------------
-
-          result = list(
-              equipment.values()
+          result = (
+              list(audio_map.values())
+              +
+              instruments
           )
 
           result.sort(
               key=lambda x: (
-                  x["category"],
-                  x["subcategory"],
-                  x["manufacturer"],
-                  x["model"]
+                  x.get("category", ""),
+                  x.get("subcategory", ""),
+                  x.get("manufacturer", ""),
+                  x.get("model", "")
               )
           )
 
-
-          # -----------------------------------
-          # Write JSON
-          # -----------------------------------
 
           os.makedirs(
               "data",
               exist_ok=True
           )
+
 
           with open(
               "data/equipment.json",
@@ -493,8 +500,15 @@ jobs:
 
 
           print(
-              f"✅ Generated "
-              f"{len(result)} equipment models."
+              f"✅ Audio models: {len(audio_map)}"
+          )
+
+          print(
+              f"✅ Instrument models: {len(instruments)}"
+          )
+
+          print(
+              f"✅ Total public equipment: {len(result)}"
           )
 
           PY
@@ -503,12 +517,10 @@ jobs:
       - name: Commit updated equipment data
         run: |
 
-          git config \
-            user.name \
+          git config user.name \
             "CASMRE Equipment Sync"
 
-          git config \
-            user.email \
+          git config user.email \
             "actions@github.com"
 
           git add data/equipment.json
