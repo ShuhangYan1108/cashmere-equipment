@@ -1070,243 +1070,167 @@
     "available": 1
   },
   {
-    "model": "Floor Tom 14''",
-    "manufacturer": "Gretsch",
-    "category": "Instrument",
-    "subcategory": "Drums",
-    "color": "",
-    "available": 1,
-    "total": 1,
-    "children": []
-  },
-  {
-    "model": "Floor Tom 16''",
-    "manufacturer": "Gretsch",
-    "category": "Instrument",
-    "subcategory": "Drums",
-    "color": "",
-    "available": 1,
-    "total": 1,
-    "children": []
-  },
-  {
     "model": "Gretsch USA Custom",
     "manufacturer": "Gretsch",
     "category": "Instrument",
     "subcategory": "Drums",
     "color": "蓝色",
-    "available": 0,
-    "total": 1,
-    "children": []
-  },
-  {
-    "model": "Kick 22''",
-    "manufacturer": "Gretsch",
-    "category": "Instrument",
-    "subcategory": "Drums",
-    "color": "",
     "available": 1,
     "total": 1,
-    "children": []
-  },
-  {
-    "model": "Rack Tom 10''",
-    "manufacturer": "Gretsch",
-    "category": "Instrument",
-    "subcategory": "Drums",
-    "color": "",
-    "available": 1,
-    "total": 1,
-    "children": []
-  },
-  {
-    "model": "Rack Tom 12''",
-    "manufacturer": "Gretsch",
-    "category": "Instrument",
-    "subcategory": "Drums",
-    "color": "",
-    "available": 1,
-    "total": 1,
-    "children": []
-  },
-  {
-    "model": "Floor Tom 18''（已出售）",
-    "manufacturer": "Ludwig",
-    "category": "Instrument",
-    "subcategory": "Drums",
-    "color": "",
-    "available": 0,
-    "total": 1,
-    "children": []
-  },
-  {
-    "model": "Kick 20''",
-    "manufacturer": "Ludwig",
-    "category": "Instrument",
-    "subcategory": "Drums",
-    "color": "",
-    "available": 1,
-    "total": 1,
-    "children": []
-  },
-  {
-    "model": "Kick 22''（不在棚里）",
-    "manufacturer": "Ludwig",
-    "category": "Instrument",
-    "subcategory": "Drums",
-    "color": "",
-    "available": 1,
-    "total": 1,
-    "children": []
-  },
-  {
-    "model": "Kick 24''（已出售）",
-    "manufacturer": "Ludwig",
-    "category": "Instrument",
-    "subcategory": "Drums",
-    "color": "",
-    "available": 0,
-    "total": 1,
-    "children": []
-  },
-  {
-    "model": "Rack Tom 12''（已出售）",
-    "manufacturer": "Ludwig",
-    "category": "Instrument",
-    "subcategory": "Drums",
-    "color": "",
-    "available": 0,
-    "total": 1,
-    "children": []
-  },
-  {
-    "model": "Tom 13''（不在棚里）",
-    "manufacturer": "Ludwig",
-    "category": "Instrument",
-    "subcategory": "Drums",
-    "color": "",
-    "available": 1,
-    "total": 1,
-    "children": []
-  },
-  {
-    "model": "Tom 16''（不在棚里）",
-    "manufacturer": "Ludwig",
-    "category": "Instrument",
-    "subcategory": "Drums",
-    "color": "",
-    "available": 1,
-    "total": 1,
-    "children": []
-  },
-  {
-    "model": "Floor Tom 15''",
-    "manufacturer": "Sonar",
-    "category": "Instrument",
-    "subcategory": "Drums",
-    "color": "",
-    "available": 1,
-    "total": 1,
-    "children": []
-  },
-  {
-    "model": "Floor Tom 16''",
-    "manufacturer": "Sonar",
-    "category": "Instrument",
-    "subcategory": "Drums",
-    "color": "",
-    "available": 1,
-    "total": 1,
-    "children": []
-  },
-  {
-    "model": "Kick 18''",
-    "manufacturer": "Sonar",
-    "category": "Instrument",
-    "subcategory": "Drums",
-    "color": "",
-    "available": 1,
-    "total": 1,
-    "children": []
-  },
-  {
-    "model": "Kick 22''",
-    "manufacturer": "Sonar",
-    "category": "Instrument",
-    "subcategory": "Drums",
-    "color": "",
-    "available": 1,
-    "total": 1,
-    "children": []
-  },
-  {
-    "model": "Rack Tom 10''",
-    "manufacturer": "Sonar",
-    "category": "Instrument",
-    "subcategory": "Drums",
-    "color": "",
-    "available": 1,
-    "total": 1,
-    "children": []
-  },
-  {
-    "model": "Rack Tom 12''",
-    "manufacturer": "Sonar",
-    "category": "Instrument",
-    "subcategory": "Drums",
-    "color": "",
-    "available": 1,
-    "total": 1,
-    "children": []
-  },
-  {
-    "model": "Rack Tom 13''",
-    "manufacturer": "Sonar",
-    "category": "Instrument",
-    "subcategory": "Drums",
-    "color": "",
-    "available": 1,
-    "total": 1,
-    "children": []
-  },
-  {
-    "model": "Snare 14''",
-    "manufacturer": "Sonar",
-    "category": "Instrument",
-    "subcategory": "Drums",
-    "color": "",
-    "available": 1,
-    "total": 1,
-    "children": []
+    "children": [
+      {
+        "name": "Rack Tom 10''",
+        "size": "",
+        "depth": "",
+        "available": true
+      },
+      {
+        "name": "Rack Tom 12''",
+        "size": "",
+        "depth": "",
+        "available": true
+      },
+      {
+        "name": "Floor Tom 14''",
+        "size": "",
+        "depth": "",
+        "available": true
+      },
+      {
+        "name": "Floor Tom 16''",
+        "size": "",
+        "depth": "",
+        "available": true
+      },
+      {
+        "name": "Kick 22''",
+        "size": "",
+        "depth": "",
+        "available": true
+      }
+    ]
   },
   {
     "model": "Ludwig",
     "manufacturer": "Ludwig",
     "category": "Instrument",
-    "subcategory": "Instruments",
+    "subcategory": "Drums",
     "color": "黑色",
-    "available": 0,
+    "available": 1,
     "total": 1,
-    "children": []
+    "children": [
+      {
+        "name": "Rack Tom 12''（已出售）",
+        "size": "",
+        "depth": "",
+        "available": false
+      },
+      {
+        "name": "Floor Tom 18''（已出售）",
+        "size": "",
+        "depth": "",
+        "available": false
+      },
+      {
+        "name": "Kick 20''",
+        "size": "",
+        "depth": "",
+        "available": true
+      },
+      {
+        "name": "Kick 24''（已出售）",
+        "size": "",
+        "depth": "",
+        "available": false
+      }
+    ]
   },
   {
     "model": "Ludwig Classic Maple",
     "manufacturer": "Ludwig",
     "category": "Instrument",
-    "subcategory": "Instruments",
+    "subcategory": "Drums",
     "color": "黑色花纹",
-    "available": 0,
+    "available": 1,
     "total": 1,
-    "children": []
+    "children": [
+      {
+        "name": "Tom 13''（不在棚里）",
+        "size": "",
+        "depth": "",
+        "available": true
+      },
+      {
+        "name": "Kick 22''（不在棚里）",
+        "size": "",
+        "depth": "",
+        "available": true
+      },
+      {
+        "name": "Tom 16''（不在棚里）",
+        "size": "",
+        "depth": "",
+        "available": true
+      }
+    ]
   },
   {
     "model": "Sonor SQ2",
     "manufacturer": "Sonar",
     "category": "Instrument",
-    "subcategory": "Instruments",
+    "subcategory": "Drums",
     "color": "黑色",
-    "available": 0,
+    "available": 1,
     "total": 1,
-    "children": []
+    "children": [
+      {
+        "name": "Rack Tom 10''",
+        "size": "",
+        "depth": "",
+        "available": true
+      },
+      {
+        "name": "Rack Tom 12''",
+        "size": "",
+        "depth": "",
+        "available": true
+      },
+      {
+        "name": "Rack Tom 13''",
+        "size": "",
+        "depth": "",
+        "available": true
+      },
+      {
+        "name": "Floor Tom 15''",
+        "size": "",
+        "depth": "",
+        "available": true
+      },
+      {
+        "name": "Floor Tom 16''",
+        "size": "",
+        "depth": "",
+        "available": true
+      },
+      {
+        "name": "Kick 18''",
+        "size": "",
+        "depth": "",
+        "available": true
+      },
+      {
+        "name": "Kick 22''",
+        "size": "",
+        "depth": "",
+        "available": true
+      },
+      {
+        "name": "Snare 14''",
+        "size": "",
+        "depth": "",
+        "available": true
+      }
+    ]
   }
 ]
