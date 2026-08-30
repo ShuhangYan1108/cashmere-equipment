@@ -310,10 +310,10 @@ jobs:
                   return "Keys"
 
               if "吉他音箱" in name or "guitar amp" in name:
-                  return "Guitars & Basses"
+                  return "Guitar Amps"
 
               if "贝斯音箱" in name or "bass amp" in name:
-                  return "Guitars & Basses"
+                  return "Bass Amps"
 
               return None
 
