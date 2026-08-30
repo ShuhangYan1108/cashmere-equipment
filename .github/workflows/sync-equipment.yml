@@ -417,7 +417,7 @@ jobs:
                   if not record_id or not raw_name:
                       continue
 
-                  status = field_value(fields, "Status", "状态, “State”)
+                  status = field_value(fields, "Status", "状态", “State”)
                   parent_value = field_value(
                       fields,
                       "父记录",
