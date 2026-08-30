@@ -571,3 +571,9 @@ button {
 .equipment-model {
   font-size: clamp(22px, 2.2vw, 38px);
 }
+.hero-title span:nth-child(2),
+.hero-title span:nth-child(3) {
+  font-size: 0.72em;
+  line-height: 0.92;
+  letter-spacing: -0.055em;
+}
