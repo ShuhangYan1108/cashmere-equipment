@@ -86,10 +86,10 @@ button {
 .hero-title {
   max-width: 1100px;
   margin: 0;
-  font-size: clamp(58px, 10vw, 160px);
+  font-size: clamp(48px, 7vw, 108px);
   font-weight: 700;
   letter-spacing: -0.075em;
-  line-height: 0.78;
+  line-height: 0.86;
   text-transform: uppercase;
 }
 
