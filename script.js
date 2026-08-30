@@ -12,6 +12,8 @@ const subcategoryLabels = {
   Drums: "DRUMS / 鼓组",
   Keys: "KEYS / 键盘乐器",
   "Guitars & Basses": "GUITARS & BASSES / 吉他与贝斯",
+  "Guitar Amps": "GUITAR AMPS / 吉他音箱",
+  "Bass Amps": "BASS AMPS / 贝斯音箱",
   Percussion: "PERCUSSION / 打击乐器",
   Instruments: "INSTRUMENTS / 其他乐器"
 };
