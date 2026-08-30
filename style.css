@@ -577,3 +577,14 @@ button {
   line-height: 0.92;
   letter-spacing: -0.055em;
 }
+/* Keep the red eyebrow in its original upper position */
+@media (min-width: 901px) {
+  .hero > div:first-child {
+    align-self: start;
+  }
+}
+
+/* Add breathing room between Chinese and English titles */
+.hero-title span:first-child {
+  margin-bottom: clamp(14px, 1.2vw, 22px);
+}
