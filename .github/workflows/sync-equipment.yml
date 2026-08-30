@@ -290,6 +290,9 @@ jobs:
           def public_instrument_subcategory(table_name):
               name = table_name.strip().casefold()
 
+              if "芬达" in name or "fender" in name:
+                  return "Guitars & Basses"
+                    
               if any(word in name for word in [
                   "暂存",
                   "temporary",
