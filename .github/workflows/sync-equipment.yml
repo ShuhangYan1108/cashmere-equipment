@@ -553,7 +553,7 @@ jobs:
 
       - name: Commit updated equipment data
         run: |
-          git config user.name "CASMRE Equipment Sync"
+          git config user.name "Cashmere Equipment Sync"
           git config user.email "actions@github.com"
 
           git add data/equipment.json
