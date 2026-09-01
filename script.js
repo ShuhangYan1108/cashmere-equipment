@@ -33,6 +33,31 @@ function textValue(value) {
   return String(value ?? "").trim();
 }
 
+function displayModel(item) {
+  const model = textValue(item.model) || "Untitled";
+  const manufacturer = textValue(item.manufacturer);
+
+  if (!manufacturer) return model;
+
+  const escapedManufacturer = manufacturer.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const withoutRepeatedBrand = model.replace(
+    new RegExp(`^${escapedManufacturer}(?:\\s+|[-–—:]\\s*)`, "i"),
+    ""
+  ).trim();
+
+  return withoutRepeatedBrand || model;
+}
+
+function equipmentImage(item) {
+  return textValue(
+    item.image ||
+    item.imagePath ||
+    item.imageUrl ||
+    item.photo ||
+    item.thumbnail
+  );
+}
+
 function isAvailable(item) {
   return Number(item.available || 0) > 0;
 }
@@ -121,6 +146,7 @@ function renderSubcategories() {
 function detailPills(item) {
   const details = [];
 
+  if (item.category) details.push(item.category);
   if (item.subcategory) details.push(item.subcategory);
   if (item.type) details.push(item.type);
   if (item.polarPattern) details.push(item.polarPattern);
@@ -178,22 +204,43 @@ function renderEquipmentItem(item, index) {
   const availableCount = Number(item.available || 0);
   const children = Array.isArray(item.children) ? item.children : [];
   const configurationId = `configuration-${index}`;
+  const model = displayModel(item);
+  const image = equipmentImage(item);
+
+  const modelMarkup = image
+    ? `
+        <button
+          class="equipment-model-trigger"
+          type="button"
+          aria-label="View ${escapeHTML(model)} image / 查看设备图片"
+          aria-expanded="false"
+        >
+          <span>${escapeHTML(model)}</span>
+          <span class="equipment-preview" aria-hidden="true">
+            <img
+              src="${escapeHTML(image)}"
+              alt=""
+              loading="lazy"
+              decoding="async"
+            >
+          </span>
+        </button>
+      `
+    : escapeHTML(model);
 
   return `
     <article class="equipment-item">
       <div class="equipment-main">
         <div class="equipment-index">${String(index + 1).padStart(2, "0")}</div>
 
-        <div class="equipment-identity">
+        <div class="equipment-content">
           <div class="equipment-brand">
             ${escapeHTML(item.manufacturer || "Cashmere Collection")}
           </div>
-          <div class="detail-pill">${escapeHTML(item.category || "Equipment")}</div>
-        </div>
-
-        <div class="equipment-content">
-          <h2 class="equipment-model">${escapeHTML(item.model || "Untitled")}</h2>
-          <div class="equipment-details">${detailPills(item)}</div>
+          <div class="equipment-title-row">
+            <h2 class="equipment-model">${modelMarkup}</h2>
+            <div class="equipment-details">${detailPills(item)}</div>
+          </div>
         </div>
 
         <div class="equipment-status">
@@ -296,6 +343,21 @@ function bindEvents() {
   });
 
   elements.list.addEventListener("click", (event) => {
+    const imageTrigger = event.target.closest(".equipment-model-trigger");
+
+    if (imageTrigger) {
+      const wasOpen = imageTrigger.classList.contains("open");
+
+      document.querySelectorAll(".equipment-model-trigger.open").forEach((trigger) => {
+        trigger.classList.remove("open");
+        trigger.setAttribute("aria-expanded", "false");
+      });
+
+      imageTrigger.classList.toggle("open", !wasOpen);
+      imageTrigger.setAttribute("aria-expanded", String(!wasOpen));
+      return;
+    }
+
     const button = event.target.closest(".configuration-button");
     if (!button) return;
 
@@ -306,6 +368,25 @@ function bindEvents() {
     button.textContent = isOpen
       ? "Close configuration − / 收起配置"
       : "View configuration + / 查看配置";
+  });
+
+  document.addEventListener("click", (event) => {
+    if (event.target.closest(".equipment-model-trigger")) return;
+
+    document.querySelectorAll(".equipment-model-trigger.open").forEach((trigger) => {
+      trigger.classList.remove("open");
+      trigger.setAttribute("aria-expanded", "false");
+    });
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+
+    document.querySelectorAll(".equipment-model-trigger.open").forEach((trigger) => {
+      trigger.classList.remove("open");
+      trigger.setAttribute("aria-expanded", "false");
+      trigger.focus();
+    });
   });
 }
 
