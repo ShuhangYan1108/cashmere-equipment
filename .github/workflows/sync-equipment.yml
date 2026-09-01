@@ -57,6 +57,26 @@ jobs:
                   ) from error
 
 
+          def request_bytes(url, headers=None):
+              req = urllib.request.Request(
+                  url,
+                  method="GET",
+                  headers=headers or {}
+              )
+
+              try:
+                  with urllib.request.urlopen(req) as response:
+                      return (
+                          response.read(),
+                          response.headers.get_content_type()
+                      )
+              except urllib.error.HTTPError as error:
+                  body = error.read().decode("utf-8", errors="replace")
+                  raise RuntimeError(
+                      f"Feishu media HTTP {error.code}: {body}"
+                  ) from error
+
+
           auth = request_json(
               "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal",
               method="POST",
@@ -184,6 +204,148 @@ jobs:
                       return lookup[key]
 
               return None
+
+
+          image_field_names = [
+              "设备图片",
+              "设备照片",
+              "图片",
+              "照片",
+              "Equipment Image",
+              "Image",
+              "Photo"
+          ]
+
+          image_extensions = {
+              ".jpg",
+              ".jpeg",
+              ".png",
+              ".webp",
+              ".gif",
+              ".avif"
+          }
+
+
+          def attachment_items(value):
+              if isinstance(value, list):
+                  return [item for item in value if isinstance(item, dict)]
+
+              if isinstance(value, dict):
+                  return [value]
+
+              return []
+
+
+          def attachment_is_image(attachment, allow_unknown=False):
+              mime_type = text(
+                  attachment.get("type")
+                  or attachment.get("mime_type")
+                  or attachment.get("mimeType")
+              ).lower()
+              name = text(attachment.get("name")).lower()
+              extension = os.path.splitext(name)[1]
+
+              return (
+                  mime_type.startswith("image/")
+                  or extension in image_extensions
+                  or allow_unknown
+              )
+
+
+          def first_image_attachment(fields):
+              preferred = field_value(fields, *image_field_names)
+
+              for attachment in attachment_items(preferred):
+                  if (
+                      attachment.get("file_token")
+                      and attachment_is_image(attachment, allow_unknown=True)
+                  ):
+                      return attachment
+
+              for value in fields.values():
+                  for attachment in attachment_items(value):
+                      if (
+                          attachment.get("file_token")
+                          and attachment_is_image(attachment)
+                      ):
+                          return attachment
+
+              return None
+
+
+          def safe_image_stem(value):
+              stem = re.sub(
+                  r"[^a-z0-9]+",
+                  "-",
+                  text(value).lower()
+              ).strip("-")
+
+              return (stem[:70] or "equipment")
+
+
+          def image_extension(attachment, content_type):
+              name_extension = os.path.splitext(
+                  text(attachment.get("name")).lower()
+              )[1]
+
+              if name_extension in image_extensions:
+                  return ".jpg" if name_extension == ".jpeg" else name_extension
+
+              by_content_type = {
+                  "image/jpeg": ".jpg",
+                  "image/png": ".png",
+                  "image/webp": ".webp",
+                  "image/gif": ".gif",
+                  "image/avif": ".avif"
+              }
+
+              return by_content_type.get(content_type, ".jpg")
+
+
+          def sync_equipment_image(fields, image_name):
+              attachment = first_image_attachment(fields)
+
+              if not attachment:
+                  return ""
+
+              file_token = text(attachment.get("file_token"))
+              token_suffix = safe_image_stem(file_token)[-10:]
+              stem = safe_image_stem(image_name)
+
+              os.makedirs("assets/equipment", exist_ok=True)
+
+              existing = [
+                  file_name
+                  for file_name in os.listdir("assets/equipment")
+                  if file_name.startswith(f"{stem}-{token_suffix}.")
+              ]
+
+              if existing:
+                  return f"assets/equipment/{existing[0]}"
+
+              media_url = (
+                  "https://open.feishu.cn/open-apis/drive/v1/medias/"
+                  f"{urllib.parse.quote(file_token)}/download"
+              )
+              try:
+                  image_data, content_type = request_bytes(
+                      media_url,
+                      headers=headers
+                  )
+              except (RuntimeError, urllib.error.URLError) as error:
+                  print(
+                      f"⚠️ Image download skipped for {image_name}: {error}"
+                  )
+                  return ""
+              extension = image_extension(attachment, content_type)
+              relative_path = (
+                  f"assets/equipment/{stem}-{token_suffix}{extension}"
+              )
+
+              with open(relative_path, "wb") as image_file:
+                  image_file.write(image_data)
+
+              return relative_path
 
 
           def primary_field_name(field_definitions):
@@ -361,6 +523,15 @@ jobs:
                       "available": 0
                   }
 
+              if not audio_map[key].get("image"):
+                  image_path = sync_equipment_image(
+                      fields,
+                      f"{brand}-{model}"
+                  )
+
+                  if image_path:
+                      audio_map[key]["image"] = image_path
+
               audio_map[key]["total"] += 1
 
               if is_available(status):
@@ -462,6 +633,10 @@ jobs:
                           "Year",
                           "Year of Manufacture"
                       )).strip(),
+                      "image": sync_equipment_image(
+                          fields,
+                          f"{table_name}-{raw_name}"
+                      ),
                       "available": (
                           is_available(status)
                           and not instrument_is_unavailable_from_name(raw_name)
@@ -496,6 +671,7 @@ jobs:
                       "subcategory": subcategory,
                       "color": item["color"],
                       "year": item["year"],
+                      "image": item["image"],
                       "available": 1 if parent_available else 0,
                       "total": 1,
                       "children": [
@@ -560,6 +736,10 @@ jobs:
           git config user.email "actions@github.com"
 
           git add data/equipment.json
+
+          if [ -d assets/equipment ]; then
+            git add assets/equipment
+          fi
 
           if git diff --cached --quiet; then
             echo "No equipment changes."
